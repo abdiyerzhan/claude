@@ -28,13 +28,22 @@ c.Authenticator.admin_users = {"admin"}
 c.Spawner.default_url = "/lab"
 c.Spawner.notebook_dir = "/home/{username}/work"
 
-# Ограничения ресурсов носят информационный характер: LocalProcessSpawner
-# (используется здесь) НЕ обеспечивает принудительное ограничение CPU/RAM —
-# это реально работает только со спавнерами вроде DockerSpawner/KubeSpawner/
-# SystemdSpawner. Единственное реальное ограничение на этом стенде — лимит
-# на весь контейнер целиком (mem_limit/cpus в docker-compose.yml).
-c.Spawner.mem_limit = "2G"
-c.Spawner.cpu_limit = 1
+# c.Spawner.mem_limit/cpu_limit сами по себе — информационные поля:
+# LocalProcessSpawner (используется здесь) их не enforce'ит, это работает
+# только со спавнерами вроде DockerSpawner/KubeSpawner/SystemdSpawner.
+#
+# Реальное ограничение памяти на процесс сделано отдельно: c.Spawner.cmd
+# указывает на limited-launch.sh, который перед запуском
+# jupyterhub-singleuser выставляет `ulimit -v` (RLIMIT_AS). Это лимит НА
+# ПРОЦЕСС (каждое ядро/каждый notebook-сервер), а не суммарно на
+# пользователя — если пользователь откроет несколько ноутбуков одновременно,
+# у каждого будет свой лимит. Для точного суммарного лимита на пользователя
+# нужны cgroups, то есть переход на DockerSpawner/KubeSpawner.
+c.Spawner.cmd = ["/srv/jupyterhub/limited-launch.sh"]
+c.Spawner.environment = {
+    "JUPYTERHUB_USER_MEM_LIMIT_MB": os.environ.get("JUPYTERHUB_USER_MEM_LIMIT_MB", "2048"),
+}
+c.Spawner.cpu_limit = 1  # информационно, см. выше
 
 # --- Автоматическая очистка неактивных серверов пользователей ---
 c.JupyterHub.services = [

@@ -27,6 +27,10 @@ RUN chmod +x /srv/jupyterhub/create_users.sh
 COPY entrypoint.sh /srv/jupyterhub/entrypoint.sh
 RUN chmod +x /srv/jupyterhub/entrypoint.sh
 
+# Обёртка запуска notebook-сервера с ограничением памяти на процесс (ulimit -v)
+COPY limited-launch.sh /srv/jupyterhub/limited-launch.sh
+RUN chmod +x /srv/jupyterhub/limited-launch.sh
+
 COPY templates/ /srv/jupyterhub/templates/
 
 WORKDIR /srv/jupyterhub
