@@ -25,3 +25,6 @@ lightgbm
 requests
 tqdm
 python-dotenv
+
+# Базы данных
+oracledb
