@@ -1,0 +1,15 @@
+# AI-ассистент в JupyterLab (Jupyter AI / Jupyternaut).
+# Отдельный файл и отдельный слой в Dockerfile — эта установка заметно
+# тяжелее основного стека (тянет dask[distributed], faiss-cpu), при обрыве
+# сети не нужно перекачивать уже установленный requirements.txt заново.
+
+jupyter-ai>=2.31,<3.0
+
+# Провайдер Claude/Anthropic — берём модуль напрямую, а не extra "all" у
+# jupyter-ai-magics: тот тянет ещё и gpt4all/boto3/cohere и прочих
+# провайдеров, которые тут не нужны.
+langchain-anthropic>=0.3,<0.4
+
+# Провайдер Ollama — локальные модели без внешнего API-ключа,
+# подключается к сервису `ollama` из docker-compose.yml.
+langchain-ollama>=0.3,<0.4

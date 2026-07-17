@@ -21,6 +21,14 @@ RUN python3 -m pip install --no-cache-dir \
         --retries 10 --timeout 300 \
         -r /srv/jupyterhub/requirements.txt
 
+# Jupyter AI — отдельный слой: тяжелее основного стека (dask, faiss-cpu),
+# при обрыве сети ретраится независимо, не трогая уже скачанный requirements.txt.
+COPY requirements-ai.txt /srv/jupyterhub/requirements-ai.txt
+RUN python3 -m pip install --no-cache-dir \
+        --index-url "$PIP_INDEX_URL" \
+        --retries 10 --timeout 300 \
+        -r /srv/jupyterhub/requirements-ai.txt
+
 # Смоук-тест: если какой-то пакет не установился/не импортируется —
 # сборка образа падает здесь, а не в ноутбуке у пользователя.
 COPY check_packages.py /srv/jupyterhub/check_packages.py

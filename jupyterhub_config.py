@@ -42,6 +42,10 @@ c.Spawner.notebook_dir = "/home/{username}/work"
 c.Spawner.cmd = ["/srv/jupyterhub/limited-launch.sh"]
 c.Spawner.environment = {
     "JUPYTERHUB_USER_MEM_LIMIT_MB": os.environ.get("JUPYTERHUB_USER_MEM_LIMIT_MB", "2048"),
+    # AI-ассистент (Jupyter AI) в каждом пользовательском сервере: ключ
+    # Anthropic и адрес Ollama берутся из окружения хаба (см. docker-compose.yml).
+    "ANTHROPIC_API_KEY": os.environ.get("ANTHROPIC_API_KEY", ""),
+    "OLLAMA_HOST": os.environ.get("OLLAMA_HOST", "http://ollama:11434"),
 }
 c.Spawner.cpu_limit = 1  # информационно, см. выше
 
