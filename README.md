@@ -7,11 +7,24 @@ Linux-логином и паролем (аутентификация через 
 ## Состав
 
 - `docker-compose.yml` — описание сервиса `jupyterhub` и томов
-- `Dockerfile` — образ на базе `jupyterhub/jupyterhub`, ставит JupyterLab и создаёт пользователей
+- `Dockerfile` — образ на базе `jupyterhub/jupyterhub`, ставит JupyterLab, стек для дата-сайентистов и создаёт пользователей
+- `requirements.txt` — Python-пакеты для дата-сайенса (pandas, numpy, scikit-learn и др.)
 - `users.txt` — список пользователей в формате `username:password`
 - `create_users.sh` — создаёт системных пользователей и задаёт пароли (выполняется при сборке образа)
 - `entrypoint.sh` — при старте контейнера чинит права на примонтированные с хоста папки
 - `jupyterhub_config.py` — конфигурация хаба (аутентификатор, спавнер, БД)
+
+## Стек для дата-сайентистов
+
+В образ уже включены (см. `requirements.txt`):
+
+- **Данные**: numpy, pandas, scipy, polars, pyarrow, openpyxl
+- **Визуализация**: matplotlib, seaborn, plotly
+- **ML**: scikit-learn, statsmodels, xgboost, lightgbm
+- **Прочее**: requests, tqdm, python-dotenv
+
+Чтобы добавить/убрать пакеты, отредактируйте `requirements.txt` и
+пересоберите образ: `docker compose up -d --build`.
 
 ## Быстрый старт
 

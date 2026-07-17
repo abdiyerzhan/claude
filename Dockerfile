@@ -2,9 +2,11 @@ FROM jupyterhub/jupyterhub:4
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip \
+        build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m pip install --no-cache-dir jupyterlab notebook
+COPY requirements.txt /srv/jupyterhub/requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /srv/jupyterhub/requirements.txt
 
 COPY users.txt /srv/jupyterhub/users.txt
 COPY create_users.sh /srv/jupyterhub/create_users.sh

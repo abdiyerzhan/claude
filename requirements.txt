@@ -1,0 +1,27 @@
+# Основной стек Jupyter
+jupyterlab
+notebook
+
+# Работа с данными
+numpy
+pandas
+scipy
+polars
+openpyxl
+pyarrow
+
+# Визуализация
+matplotlib
+seaborn
+plotly
+
+# Машинное обучение
+scikit-learn
+statsmodels
+xgboost
+lightgbm
+
+# Утилиты
+requests
+tqdm
+python-dotenv
