@@ -16,6 +16,8 @@ RUN chmod +x /srv/jupyterhub/create_users.sh \
 COPY entrypoint.sh /srv/jupyterhub/entrypoint.sh
 RUN chmod +x /srv/jupyterhub/entrypoint.sh
 
+COPY templates/ /srv/jupyterhub/templates/
+
 WORKDIR /srv/jupyterhub
 
 ENTRYPOINT ["/srv/jupyterhub/entrypoint.sh"]

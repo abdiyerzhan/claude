@@ -12,6 +12,9 @@ while IFS=: read -r username _ || [ -n "$username" ]; do
 
   if [ -d "/home/${username}" ]; then
     mkdir -p "/home/${username}/work"
+    if [ ! -f "/home/${username}/work/welcome.ipynb" ] && [ -f /srv/jupyterhub/templates/welcome.ipynb ]; then
+      cp /srv/jupyterhub/templates/welcome.ipynb "/home/${username}/work/welcome.ipynb"
+    fi
     chown -R "${username}:${username}" "/home/${username}"
   fi
 done < "$USERS_FILE"
