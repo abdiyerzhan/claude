@@ -22,10 +22,18 @@ Linux-логином и паролем (аутентификация через 
 - **Данные**: numpy, pandas, scipy, polars, pyarrow, openpyxl
 - **Визуализация**: matplotlib, seaborn, plotly
 - **ML**: scikit-learn, statsmodels, xgboost, lightgbm
+- **Базы данных**: oracledb
 - **Прочее**: requests, tqdm, python-dotenv
 
 Чтобы добавить/убрать пакеты, отредактируйте `requirements.txt` и
 пересоберите образ: `docker compose up -d --build`.
+
+> Ставьте новые Python-пакеты через `requirements.txt` и пересборку образа,
+> а не через `pip install --user` из ноутбука. У JupyterHub-сервера
+> пользовательский `site-packages` может не подхватываться сразу — пакет
+> ставится, но `import` не находит его до перезапуска ядра, а иногда и после.
+> Через `requirements.txt` пакет доступен всем пользователям сразу после
+> старта контейнера.
 
 ## Стартовый ноутбук
 
