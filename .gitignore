@@ -1,2 +1,4 @@
 notebooks/
 shared/
+__pycache__/
+/users.txt

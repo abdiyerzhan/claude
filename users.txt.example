@@ -1,0 +1,11 @@
+# Список пользователей JupyterHub в формате username:password
+# Каждая строка создаёт системного Linux-пользователя с указанным паролем
+# при СТАРТЕ контейнера (не при сборке образа) — правки этого файла не
+# требуют пересборки, достаточно `docker compose restart jupyterhub`.
+#
+# Это шаблон. Перед первым запуском скопируйте его в реальный файл:
+#   cp users.txt.example users.txt
+# Файл users.txt в .gitignore — реальные пароли в git не попадут.
+admin:admin_pass_change_me
+alice:alice_pass_change_me
+bob:bob_pass_change_me

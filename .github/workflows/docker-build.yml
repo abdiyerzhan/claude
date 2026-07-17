@@ -1,0 +1,23 @@
+name: Docker build
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build JupyterHub image
+        run: docker build -t jupyterhub-ds-test .
+
+      - name: Build nginx image
+        run: docker build -t jupyterhub-nginx-test ./nginx
+
+      - name: Validate docker-compose.yml
+        run: |
+          cp users.txt.example users.txt
+          docker compose config -q

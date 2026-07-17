@@ -3,6 +3,15 @@ set -euo pipefail
 
 USERS_FILE="/srv/jupyterhub/users.txt"
 
+if [ ! -f "$USERS_FILE" ]; then
+  echo "Не найден $USERS_FILE. Скопируйте users.txt.example в users.txt и перезапустите контейнер." >&2
+  exit 1
+fi
+
+# Создаём/обновляем системных пользователей и их пароли на старте контейнера
+# (не при сборке образа) — так users.txt можно менять без пересборки.
+/srv/jupyterhub/create_users.sh
+
 # Примонтированные с хоста домашние папки могут принадлежать root —
 # приводим владельца в соответствие с пользователем контейнера.
 while IFS=: read -r username _ || [ -n "$username" ]; do
