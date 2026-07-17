@@ -39,6 +39,9 @@ PACKAGES = {
     "jupyterlab-lsp": "jupyterlab_lsp",
     "python-lsp-server": "pylsp",
     "jupyterhub-idle-culler": "jupyterhub_idle_culler",
+    "jupyter-ai": "jupyter_ai",
+    "langchain-anthropic": "langchain_anthropic",
+    "langchain-ollama": "langchain_ollama",
 }
 
 failed = []

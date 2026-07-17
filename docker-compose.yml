@@ -1,6 +1,12 @@
 services:
   jupyterhub:
-    build: .
+    build:
+      context: .
+      args:
+        # Если сборка падает по таймауту на pip install (медленное
+        # соединение до files.pythonhosted.org) — задайте зеркало через
+        # .env-файл: PIP_INDEX_URL=https://... (варианты см. в README).
+        PIP_INDEX_URL: ${PIP_INDEX_URL:-https://pypi.org/simple}
     image: local/jupyterhub-passwd:latest
     container_name: jupyterhub
     restart: unless-stopped
@@ -17,6 +23,13 @@ services:
       # Лимит виртуальной памяти НА ПРОЦЕСС (ulimit -v), см. limited-launch.sh
       # и комментарий в jupyterhub_config.py. Не суммарно на пользователя.
       - JUPYTERHUB_USER_MEM_LIMIT_MB=2048
+      # AI-ассистент в JupyterLab (Jupyter AI). Ключ Anthropic — из .env,
+      # ничего не коммитьте с реальным ключом. Ollama работает без ключа,
+      # адрес — сервис ollama из этого же compose (см. ниже).
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OLLAMA_HOST=http://ollama:11434
+    depends_on:
+      - ollama
     volumes:
       # Конфигурация хаба — можно править без пересборки образа
       - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
@@ -36,6 +49,20 @@ services:
       # Общая папка, доступная всем пользователям на чтение/запись
       - ./shared:/srv/shared
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: jupyterhub-ollama
+    restart: unless-stopped
+    # Порт наружу не публикуется — доступен только из docker-сети как
+    # http://ollama:11434 (см. OLLAMA_HOST у jupyterhub выше).
+    expose:
+      - "11434"
+    # Лимит зависит от модели: 3B-модели ~4-6 ГБ, 7-8B ~8-10 ГБ. Поднимите
+    # при необходимости под выбранную модель (см. README про `ollama pull`).
+    mem_limit: 6g
+    volumes:
+      - ollama_data:/root/.ollama
+
   nginx:
     build: ./nginx
     container_name: jupyterhub-nginx
@@ -53,3 +80,4 @@ services:
 volumes:
   jupyterhub_data:
   nginx_certs:
+  ollama_data:
