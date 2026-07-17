@@ -1,0 +1,7 @@
+# Список пользователей JupyterHub в формате username:password
+# Каждая строка создаёт системного Linux-пользователя с указанным паролем.
+# ВАЖНО: для продакшена не храните пароли в открытом виде в git —
+# используйте переменные окружения / secrets и .gitignore для этого файла.
+admin:admin_pass_change_me
+alice:alice_pass_change_me
+bob:bob_pass_change_me
