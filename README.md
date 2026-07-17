@@ -9,6 +9,7 @@ Linux-логином и паролем (аутентификация через 
 - `docker-compose.yml` — описание сервиса `jupyterhub` и томов
 - `Dockerfile` — образ на базе `jupyterhub/jupyterhub`, ставит JupyterLab, стек для дата-сайентистов и создаёт пользователей
 - `requirements.txt` — Python-пакеты для дата-сайенса (pandas, numpy, scikit-learn и др.)
+- `check_packages.py` — смоук-тест на этапе сборки: проверяет, что все пакеты из `requirements.txt` реально импортируются
 - `users.txt` — список пользователей в формате `username:password`
 - `create_users.sh` — создаёт системных пользователей и задаёт пароли (выполняется при сборке образа)
 - `entrypoint.sh` — при старте контейнера чинит права на примонтированные с хоста папки, кладёт стартовый ноутбук новым пользователям
@@ -34,6 +35,36 @@ Linux-логином и паролем (аутентификация через 
 > ставится, но `import` не находит его до перезапуска ядра, а иногда и после.
 > Через `requirements.txt` пакет доступен всем пользователям сразу после
 > старта контейнера.
+
+Сразу после установки зависимостей `Dockerfile` запускает
+`check_packages.py`, который импортирует каждый пакет из списка. Если
+пакет не установился или не импортируется — `docker compose build`
+упадёт с понятной ошибкой прямо на этом шаге, а не всплывёт позже как
+`ModuleNotFoundError` в чьей-то тетрадке.
+
+### Подключение к Oracle (`oracledb`)
+
+Пакет `oracledb` по умолчанию работает в **thin-режиме** — чистый Python,
+Oracle Instant Client не нужен. Достаточно строки подключения:
+
+```python
+import oracledb
+
+conn = oracledb.connect(
+    user="myuser",
+    password="mypassword",
+    dsn="myhost.example.com:1521/mydb_service",  # host:port/service_name
+)
+cur = conn.cursor()
+cur.execute("SELECT * FROM dual")
+print(cur.fetchall())
+```
+
+Thin-режим подходит для Oracle Database 12.1 и новее. Если нужен
+thick-режим (старые версии БД, TNS-алиасы, advanced queuing) — потребуется
+отдельно установить Oracle Instant Client в образ и вызвать
+`oracledb.init_oracle_client()`; в базовой поставке этого стенда он не
+включён, чтобы не раздувать образ без необходимости.
 
 ## Стартовый ноутбук
 
