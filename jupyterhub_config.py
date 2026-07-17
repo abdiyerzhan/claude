@@ -1,4 +1,5 @@
 import os
+import sys
 
 c = get_config()  # noqa
 
@@ -26,6 +27,29 @@ c.Authenticator.admin_users = {"admin"}
 # --- Спавнер: каждый пользователь получает свой notebook-процесс ---
 c.Spawner.default_url = "/lab"
 c.Spawner.notebook_dir = "/home/{username}/work"
+
+# Ограничения ресурсов носят информационный характер: LocalProcessSpawner
+# (используется здесь) НЕ обеспечивает принудительное ограничение CPU/RAM —
+# это реально работает только со спавнерами вроде DockerSpawner/KubeSpawner/
+# SystemdSpawner. Единственное реальное ограничение на этом стенде — лимит
+# на весь контейнер целиком (mem_limit/cpus в docker-compose.yml).
+c.Spawner.mem_limit = "2G"
+c.Spawner.cpu_limit = 1
+
+# --- Автоматическая очистка неактивных серверов пользователей ---
+c.JupyterHub.services = [
+    {
+        "name": "idle-culler",
+        "admin": True,
+        "command": [
+            sys.executable,
+            "-m",
+            "jupyterhub_idle_culler",
+            "--timeout=3600",   # считать сервер неактивным через 1 час
+            "--cull-every=300", # проверять каждые 5 минут
+        ],
+    }
+]
 
 # --- Постоянное хранение состояния хаба (БД, cookie secret) ---
 c.JupyterHub.db_url = "sqlite:////srv/jupyterhub/data/jupyterhub.sqlite"

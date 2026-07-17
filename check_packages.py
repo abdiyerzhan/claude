@@ -27,6 +27,12 @@ PACKAGES = {
     "tqdm": "tqdm",
     "python-dotenv": "dotenv",
     "oracledb": "oracledb",
+    "jupyterlab-git": "jupyterlab_git",
+    "nbdime": "nbdime",
+    "ipywidgets": "ipywidgets",
+    "jupyterlab-lsp": "jupyterlab_lsp",
+    "python-lsp-server": "pylsp",
+    "jupyterhub-idle-culler": "jupyterhub_idle_culler",
 }
 
 failed = []

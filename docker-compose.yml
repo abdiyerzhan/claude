@@ -4,13 +4,23 @@ services:
     image: local/jupyterhub-passwd:latest
     container_name: jupyterhub
     restart: unless-stopped
-    ports:
-      - "8000:8000"
+    # Порт наружу не публикуется напрямую — доступ только через nginx (HTTPS),
+    # см. сервис nginx ниже. Внутри docker-сети jupyterhub:8000 доступен nginx.
+    expose:
+      - "8000"
+    # Лимит на весь контейнер целиком — общая защита хоста от переполнения
+    # памяти/CPU. Это НЕ лимит на отдельного пользователя, см. jupyterhub_config.py.
+    mem_limit: 4g
+    cpus: 2.0
     environment:
       - TZ=Asia/Almaty
     volumes:
       # Конфигурация хаба — можно править без пересборки образа
       - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
+
+      # Список пользователей/паролей — создаётся из users.txt.example (см. README),
+      # не запекается в образ, правки применяются рестартом контейнера
+      - ./users.txt:/srv/jupyterhub/users.txt:ro
 
       # Постоянное хранилище состояния хаба (БД пользователей, сессии, cookie secret)
       - jupyterhub_data:/srv/jupyterhub/data
@@ -23,5 +33,20 @@ services:
       # Общая папка, доступная всем пользователям на чтение/запись
       - ./shared:/srv/shared
 
+  nginx:
+    build: ./nginx
+    container_name: jupyterhub-nginx
+    restart: unless-stopped
+    depends_on:
+      - jupyterhub
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Самоподписанный сертификат генерируется автоматически при первом
+      # старте (см. nginx/entrypoint.sh) и переживает пересоздание контейнера
+      - nginx_certs:/etc/nginx/certs
+
 volumes:
   jupyterhub_data:
+  nginx_certs:
