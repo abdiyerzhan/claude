@@ -7,7 +7,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /srv/jupyterhub/requirements.txt
-RUN python3 -m pip install --no-cache-dir -r /srv/jupyterhub/requirements.txt
+# --retries/--timeout — устойчивость к обрывам сети при резолве большого
+# списка зависимостей (частая причина "No matching distribution found"
+# для реально существующего пакета — это не конфликт версий, а таймаут).
+RUN python3 -m pip install --no-cache-dir --retries 5 --timeout 100 \
+        -r /srv/jupyterhub/requirements.txt
 
 # Смоук-тест: если какой-то пакет не установился/не импортируется —
 # сборка образа падает здесь, а не в ноутбуке у пользователя.
@@ -26,6 +30,10 @@ RUN chmod +x /srv/jupyterhub/create_users.sh
 
 COPY entrypoint.sh /srv/jupyterhub/entrypoint.sh
 RUN chmod +x /srv/jupyterhub/entrypoint.sh
+
+# Обёртка запуска notebook-сервера с ограничением памяти на процесс (ulimit -v)
+COPY limited-launch.sh /srv/jupyterhub/limited-launch.sh
+RUN chmod +x /srv/jupyterhub/limited-launch.sh
 
 COPY templates/ /srv/jupyterhub/templates/
 

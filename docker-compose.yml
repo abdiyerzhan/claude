@@ -14,6 +14,9 @@ services:
     cpus: 2.0
     environment:
       - TZ=Asia/Almaty
+      # Лимит виртуальной памяти НА ПРОЦЕСС (ulimit -v), см. limited-launch.sh
+      # и комментарий в jupyterhub_config.py. Не суммарно на пользователя.
+      - JUPYTERHUB_USER_MEM_LIMIT_MB=2048
     volumes:
       # Конфигурация хаба — можно править без пересборки образа
       - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
