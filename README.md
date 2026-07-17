@@ -63,14 +63,15 @@ Linux-логином и паролем (аутентификация через 
 (certbot) или поставьте перед этим стендом Traefik/внешний балансировщик,
 который сам управляет сертификатами.
 
-## Стек для дата-сайентистов
+## Стек для дата-сайентистов и дата-аналитиков
 
 В образ включены (см. `requirements.txt`, версии зафиксированы диапазонами):
 
 - **Данные**: numpy, pandas, scipy, polars, pyarrow, openpyxl
 - **Визуализация**: matplotlib, seaborn, plotly
 - **ML**: scikit-learn, statsmodels, xgboost, lightgbm
-- **Базы данных**: oracledb
+- **Базы данных**: oracledb, psycopg2-binary (PostgreSQL), duckdb, sqlalchemy, jupysql (`%sql`-магия в ноутбуке)
+- **Отчётность/аналитика**: xlsxwriter (форматированные Excel-отчёты), itables (интерактивные таблицы в ноутбуке)
 - **Удобство работы**: jupyterlab-git, nbdime, ipywidgets, jupyterlab-lsp + python-lsp-server
 - **Прочее**: requests, tqdm, python-dotenv
 
@@ -90,6 +91,33 @@ Linux-логином и паролем (аутентификация через 
 понятной ошибкой прямо на этом шаге, а не всплывёт позже как
 `ModuleNotFoundError` в чьей-то тетрадке. Тот же смоук-тест гоняется в CI
 (`.github/workflows/docker-build.yml`) на каждый push и pull request.
+
+### SQL прямо в ноутбуке (jupysql + duckdb / psycopg2)
+
+`jupysql` даёт магию `%sql`/`%%sql` — результат запроса сразу приходит как
+DataFrame, без ручного `pd.read_sql`:
+
+```python
+%load_ext sql
+
+# локальная аналитика по CSV/Parquet без внешней БД
+%sql duckdb:///:memory:
+%sql SELECT * FROM read_csv_auto('/srv/shared/data.csv') LIMIT 10
+
+# подключение к PostgreSQL
+%sql postgresql+psycopg2://user:password@host:5432/dbname
+result = %sql SELECT * FROM my_table LIMIT 100
+df = result.DataFrame()
+```
+
+### Интерактивные таблицы (itables)
+
+```python
+from itables import init_notebook_mode
+init_notebook_mode(all_interactive=True)
+
+df  # любой DataFrame теперь рендерится как сортируемая/фильтруемая таблица
+```
 
 ### Работа с git из JupyterLab
 
