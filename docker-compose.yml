@@ -1,0 +1,27 @@
+services:
+  jupyterhub:
+    build: .
+    image: local/jupyterhub-passwd:latest
+    container_name: jupyterhub
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - TZ=Asia/Almaty
+    volumes:
+      # Конфигурация хаба — можно править без пересборки образа
+      - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
+
+      # Постоянное хранилище состояния хаба (БД пользователей, сессии, cookie secret)
+      - jupyterhub_data:/srv/jupyterhub/data
+
+      # Домашние папки пользователей — данные сохраняются на хосте
+      - ./notebooks/admin:/home/admin
+      - ./notebooks/alice:/home/alice
+      - ./notebooks/bob:/home/bob
+
+      # Общая папка, доступная всем пользователям на чтение/запись
+      - ./shared:/srv/shared
+
+volumes:
+  jupyterhub_data:
