@@ -1,6 +1,12 @@
 services:
   jupyterhub:
-    build: .
+    build:
+      context: .
+      args:
+        # Если сборка падает по таймауту на pip install (медленное
+        # соединение до files.pythonhosted.org) — задайте зеркало через
+        # .env-файл: PIP_INDEX_URL=https://... (варианты см. в README).
+        PIP_INDEX_URL: ${PIP_INDEX_URL:-https://pypi.org/simple}
     image: local/jupyterhub-passwd:latest
     container_name: jupyterhub
     restart: unless-stopped

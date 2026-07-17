@@ -1,5 +1,10 @@
 FROM jupyterhub/jupyterhub:4
 
+# Индекс pip настраиваемый — если соединение до files.pythonhosted.org
+# медленное/нестабильное (типично для некоторых регионов), можно подставить
+# более быстрое зеркало через --build-arg PIP_INDEX_URL=... (см. README).
+ARG PIP_INDEX_URL=https://pypi.org/simple
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
         python3-pip \
         build-essential \
@@ -7,10 +12,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /srv/jupyterhub/requirements.txt
-# --retries/--timeout — устойчивость к обрывам сети при резолве большого
-# списка зависимостей (частая причина "No matching distribution found"
-# для реально существующего пакета — это не конфликт версий, а таймаут).
-RUN python3 -m pip install --no-cache-dir --retries 5 --timeout 100 \
+# --retries/--timeout — устойчивость к медленному/нестабильному соединению
+# при скачивании большого списка зависимостей (частая причина "No matching
+# distribution found"/ReadTimeoutError для реально существующего пакета —
+# это не конфликт версий, а сеть).
+RUN python3 -m pip install --no-cache-dir \
+        --index-url "$PIP_INDEX_URL" \
+        --retries 10 --timeout 300 \
         -r /srv/jupyterhub/requirements.txt
 
 # Смоук-тест: если какой-то пакет не установился/не импортируется —
