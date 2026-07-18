@@ -46,6 +46,9 @@ c.Spawner.environment = {
     # Anthropic и адрес Ollama берутся из окружения хаба (см. docker-compose.yml).
     "ANTHROPIC_API_KEY": os.environ.get("ANTHROPIC_API_KEY", ""),
     "OLLAMA_HOST": os.environ.get("OLLAMA_HOST", "http://ollama:11434"),
+    # Корпоративный OpenAI-совместимый эндпоинт (см. docker-compose.yml).
+    "OPENAI_API_KEY": os.environ.get("OPENAI_API_KEY", ""),
+    "OPENAI_API_BASE": os.environ.get("OPENAI_API_BASE", ""),
 }
 c.Spawner.cpu_limit = 1  # информационно, см. выше
 

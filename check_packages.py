@@ -42,6 +42,7 @@ PACKAGES = {
     "jupyter-ai": "jupyter_ai",
     "langchain-anthropic": "langchain_anthropic",
     "langchain-ollama": "langchain_ollama",
+    "langchain-openai": "langchain_openai",
 }
 
 failed = []

@@ -28,6 +28,11 @@ services:
       # адрес — сервис ollama из этого же compose (см. ниже).
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - OLLAMA_HOST=http://ollama:11434
+      # Корпоративный OpenAI-совместимый эндпоинт (LiteLLM/vLLM/gateway и
+      # т.п.) — тот же протокол, что у OpenAI, но свой base_url. Bearer-токен
+      # и адрес задаются в .env, оба пустые/неактивны по умолчанию.
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_API_BASE=${OPENAI_API_BASE:-}
     depends_on:
       - ollama
     volumes:
