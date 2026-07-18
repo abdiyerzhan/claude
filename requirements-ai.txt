@@ -13,3 +13,9 @@ langchain-anthropic>=0.3,<0.4
 # Провайдер Ollama — локальные модели без внешнего API-ключа,
 # подключается к сервису `ollama` из docker-compose.yml.
 langchain-ollama>=0.3,<0.4
+
+# Провайдер OpenAI-совместимого API — та же библиотека `openai`, но с
+# кастомным base_url. Подходит для корпоративных прокси/шлюзов (LiteLLM,
+# vLLM, внутренний gateway и т.п.), если они принимают обычный
+# Bearer-токен в заголовке Authorization, как настоящий OpenAI API.
+langchain-openai>=0.3,<0.4

@@ -11,7 +11,11 @@ notebook>=7.3,<8
 numpy>=1.26,<3
 pandas>=2.2,<3
 scipy>=1.13,<2
-polars>=1.9,<2
+# polars-lts-cpu, а не обычный polars: стандартная сборка требует
+# AVX2/FMA/BMI2 и падает "Illegal instruction" на старых/слабых CPU
+# (например, мини-ПК без этих инструкций). lts-cpu — тот же `import polars`,
+# просто без этого требования (медленнее на векторных операциях).
+polars-lts-cpu>=1.9,<2
 openpyxl>=3.1,<4
 pyarrow>=17,<19
 
