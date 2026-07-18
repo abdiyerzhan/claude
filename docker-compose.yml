@@ -33,6 +33,8 @@ services:
       # и адрес задаются в .env, оба пустые/неактивны по умолчанию.
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - OPENAI_API_BASE=${OPENAI_API_BASE:-}
+      # Google Gemini через API-ключ (Google AI Studio, не Vertex AI).
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
     depends_on:
       - ollama
     volumes:

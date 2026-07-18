@@ -49,6 +49,8 @@ c.Spawner.environment = {
     # Корпоративный OpenAI-совместимый эндпоинт (см. docker-compose.yml).
     "OPENAI_API_KEY": os.environ.get("OPENAI_API_KEY", ""),
     "OPENAI_API_BASE": os.environ.get("OPENAI_API_BASE", ""),
+    # Google Gemini (см. docker-compose.yml).
+    "GOOGLE_API_KEY": os.environ.get("GOOGLE_API_KEY", ""),
 }
 c.Spawner.cpu_limit = 1  # информационно, см. выше
 

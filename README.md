@@ -98,13 +98,15 @@ Linux-логином и паролем (аутентификация через 
 
 Стенд ставит [Jupyter AI](https://github.com/jupyterlab/jupyter-ai) —
 чат-панель в JupyterLab (иконка ракеты в левом сайдбаре) плюс магию
-`%%ai` в ячейках. Поддержаны три провайдера "из коробки":
+`%%ai` в ячейках. Поддержаны четыре провайдера "из коробки":
 
 - **Anthropic (Claude)** — облачный, нужен API-ключ.
 - **Ollama** — локальная модель, без внешнего ключа, крутится отдельным
   сервисом `ollama` в этом же `docker-compose.yml`.
 - **OpenAI-совместимый корпоративный эндпоинт** — библиотека `openai` со
   своим `base_url` (LiteLLM/vLLM/внутренний gateway), Bearer-токен.
+- **Google Gemini** — облачный, через API-ключ Google AI Studio (не Vertex
+  AI, GCP-проект не нужен).
 
 ### Настройка Claude
 
@@ -165,6 +167,22 @@ Bearer-токен в заголовке `Authorization` — подключает
 понадобится доработка (кастомный провайдер поверх `langchain-openai`
 или `ChatOpenAI(default_headers=...)`) — напишите, какая у вас схема,
 доведу.
+
+### Настройка Google Gemini
+
+Через API-ключ Google AI Studio (не Vertex AI — GCP-проект и
+service account не нужны).
+
+1. Получите ключ на https://aistudio.google.com/apikey.
+2. Добавьте в `.env`:
+   ```bash
+   # .env
+   GOOGLE_API_KEY=...
+   ```
+3. Перезапустите: `docker compose up -d`.
+4. В панели Jupyter AI выберите провайдера **Gemini** (Google
+   Generative AI) и модель, например `gemini-2.5-flash` или
+   `gemini-2.5-pro`. Ключ подхватится из окружения автоматически.
 
 ### Если сборка падает с `Illegal instruction` / exit code 132
 

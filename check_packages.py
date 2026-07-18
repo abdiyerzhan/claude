@@ -49,6 +49,7 @@ PACKAGES = {
     "langchain-anthropic": "langchain_anthropic",
     "langchain-ollama": "langchain_ollama",
     "langchain-openai": "langchain_openai",
+    "langchain-google-genai": "langchain_google_genai",
 }
 
 failed = []
