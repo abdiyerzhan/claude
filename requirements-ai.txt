@@ -19,3 +19,7 @@ langchain-ollama>=0.3,<0.4
 # vLLM, внутренний gateway и т.п.), если они принимают обычный
 # Bearer-токен в заголовке Authorization, как настоящий OpenAI API.
 langchain-openai>=0.3,<0.4
+
+# Провайдер Google Gemini через API-ключ (Google AI Studio), не Vertex AI —
+# не нужен GCP-проект/service account, просто GOOGLE_API_KEY.
+langchain-google-genai>=2.1,<3

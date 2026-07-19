@@ -6,6 +6,14 @@ c = get_config()  # noqa
 c.JupyterHub.ip = "0.0.0.0"
 c.JupyterHub.port = 8000
 
+# --- Брендинг: логотип на странице входа, в шапке и на странице спавна ---
+# Файл кладите в ./branding/logo.png на хосте (см. branding/README.md).
+# Если файла нет — используется логотип Jupyter по умолчанию, сборка/старт
+# из-за отсутствия логотипа не падают.
+LOGO_FILE = "/srv/jupyterhub/branding/logo.png"
+if os.path.exists(LOGO_FILE):
+    c.JupyterHub.logo_file = LOGO_FILE
+
 # --- Аутентификация по системным паролям Linux-пользователей ---
 c.JupyterHub.authenticator_class = "jupyterhub.auth.PAMAuthenticator"
 c.PAMAuthenticator.open_sessions = False
@@ -49,6 +57,8 @@ c.Spawner.environment = {
     # Корпоративный OpenAI-совместимый эндпоинт (см. docker-compose.yml).
     "OPENAI_API_KEY": os.environ.get("OPENAI_API_KEY", ""),
     "OPENAI_API_BASE": os.environ.get("OPENAI_API_BASE", ""),
+    # Google Gemini (см. docker-compose.yml).
+    "GOOGLE_API_KEY": os.environ.get("GOOGLE_API_KEY", ""),
 }
 c.Spawner.cpu_limit = 1  # информационно, см. выше
 
