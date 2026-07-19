@@ -41,6 +41,11 @@ services:
       # Конфигурация хаба — можно править без пересборки образа
       - ./jupyterhub_config.py:/srv/jupyterhub/jupyterhub_config.py:ro
 
+      # Логотип на странице входа/шапке (см. branding/README.md). Монтируем
+      # директорию целиком, а не сам файл — иначе Docker создаст пустую
+      # папку на месте отсутствующего файла, если его ещё нет на хосте.
+      - ./branding:/srv/jupyterhub/branding:ro
+
       # Список пользователей/паролей — создаётся из users.txt.example (см. README),
       # не запекается в образ, правки применяются рестартом контейнера
       - ./users.txt:/srv/jupyterhub/users.txt:ro
